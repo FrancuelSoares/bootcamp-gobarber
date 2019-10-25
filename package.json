@@ -2,9 +2,11 @@
   "name": "bootcamp-gobarber",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:FrancuelSoares/bootcamp-gobarber.git",
-  "author": "Françuel Soares <fs.francuelsoares@gmail.com>",
   "license": "MIT",
+  "scripts":{
+    "dev": "nodemon src/server.js",
+    "dev:debug": "nodemon --inspect src/server.js"
+  },
   "dependencies": {
     "express": "^4.17.1"
   },
