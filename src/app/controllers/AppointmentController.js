@@ -7,13 +7,22 @@ import File from '../models/File';
 
 class AppointmentController {
   async index(req, res) {
+    const schema = Yup.object().shape({
+      page: Yup.number().positive()
+    });
+
+    if (!(await schema.isValid(req.query))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+
+    const { page = 1 } = req.query;
+
     const appointments = await Appointment.findAll({
       attributes: ['id', 'date'],
       where: {
         user_id: req.userId,
         canceled_at: null
       },
-      order: ['date'],
       include: [
         {
           model: User,
@@ -27,7 +36,10 @@ class AppointmentController {
             }
           ]
         }
-      ]
+      ],
+      order: ['date'],
+      limit: 20,
+      offset: (page - 1) * 20
     });
 
     return res.json(appointments);
