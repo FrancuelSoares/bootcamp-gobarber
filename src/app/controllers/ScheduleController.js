@@ -1,4 +1,4 @@
-import { startOfday, endOfDay, parseISO } from 'date-fns';
+import { startOfDay, endOfDay, parseISO } from 'date-fns';
 import { Op } from 'sequelize';
 
 import User from '../models/User';
@@ -23,7 +23,7 @@ class ScheduleController {
         provider_id: req.userId,
         canceled_at: null,
         date: {
-          [Op.between]: [startOfday(parsedDate), endOfDay(parsedDate)]
+          [Op.between]: [startOfDay(parsedDate), endOfDay(parsedDate)]
         }
       },
       order: ['date']
