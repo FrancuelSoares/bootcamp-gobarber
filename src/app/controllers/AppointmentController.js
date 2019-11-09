@@ -2,7 +2,8 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import CancellationAppointmentEmail from '../jobs/CancellationAppointmentEmail';
 
 import Notification from '../schemas/Notification';
 
@@ -166,18 +167,13 @@ class AppointmentController {
 
     await appointment.save();
 
-    // Send E-mail
-    await Mail.sendMail({
-      to: `${appointment.provider.name} <${appointment.provider.email}>`,
-      subject: 'Agendamento Cancelado',
-      template: 'cancellation',
-      context: {
-        provider: appointment.provider.name,
-        user: appointment.user.name,
-        date: format(appointment.date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
-          locale: pt
-        })
-      }
+    /**
+     * Send Email
+     *
+     * > Adding in Background Job
+     */
+    await Queue.add(CancellationAppointmentEmail.key, {
+      appointment
     });
 
     return res.json(appointment);
